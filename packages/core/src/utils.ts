@@ -5,6 +5,8 @@ import type {
   MetaplexFile,
   TransactionBuilder,
 } from "@metaplex-foundation/js";
+import { UploadMethod } from "./types";
+import type { PublicKey } from "@solana/web3.js";
 
 export const truncateAddress = (address: string) => {
   return `${address.slice(0, 4)}...${address.slice(
@@ -20,10 +22,22 @@ type JsonMetadataMetaplexFile = Omit<JsonMetadata, "image"> & {
 export const mintNft = async (
   metaplex: Metaplex,
   json: JsonMetadataMetaplexFile,
-  createNftInput: Omit<CreateNftInput, "uri" | "name" | "sellerFeeBasisPoints">
+  createNftInput: Omit<CreateNftInput, "uri" | "name" | "sellerFeeBasisPoints">,
+  uploadMethod: UploadMethod = UploadMethod.shdw_drive,
+  shdwStorageAccount?: PublicKey
 ): Promise<TransactionBuilder> => {
   console.info({ json });
-  const { uri } = await metaplex.nfts().uploadMetadata(json);
+  let uri = "";
+  if (uploadMethod === UploadMethod.arweave) {
+    const mplx_upload = await metaplex.nfts().uploadMetadata(json);
+    uri = mplx_upload.uri;
+  }
+
+  if (uploadMethod === UploadMethod.shdw_drive) {
+    // TODO calculate bytes needed for upload
+    // TODO if shdwStorageAccount isn't passed in, reject. We assume the user
+    // has a shdw storage account here
+  }
 
   const txBuilder = await metaplex
     .nfts()

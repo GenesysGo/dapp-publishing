@@ -16,7 +16,10 @@ export type AppMetadata = Omit<AppJsonMetadata, "image"> & {
   image: string | MetaplexFile;
 };
 
-export type MetaplexFileReleaseJsonMetadata = Omit<ReleaseJsonMetadata, "image"> & {
+export type MetaplexFileReleaseJsonMetadata = Omit<
+  ReleaseJsonMetadata,
+  "image"
+> & {
   image: string | MetaplexFile;
   extensions: {
     solana_dapp_store: {
@@ -84,3 +87,8 @@ export type SolanaMobileDappPublisherPortal = {
   google_store_package: string;
   testing_instructions: string;
 };
+
+export enum UploadMethod {
+  arweave,
+  shdw_drive,
+}
